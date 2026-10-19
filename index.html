@@ -1,0 +1,2560 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chúc Mừng Ngày Phụ Nữ Việt Nam 20/10 🌸</title>
+
+    <!-- Open Graph / Meta SEO -->
+    <meta name="title" content="Chúc Mừng Ngày Phụ Nữ Việt Nam 20/10 🌸">
+    <meta name="description" content="Món quà ma thuật 3D lãng mạn và tinh tế dành tặng ngày Phụ nữ Việt Nam 20/10 ✨">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Chúc Mừng Ngày Phụ Nữ Việt Nam 20/10 🌸">
+    <meta property="og:description" content="Chạm vào bó hoa ma thuật để khám phá Ngân hà Điều Ước và Đóa hoa 3D bung nở ngập tràn yêu thương!">
+    <meta property="og:image" content="assets/bouquet.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Chúc Mừng Ngày Phụ Nữ Việt Nam 20/10 🌸">
+    <meta name="twitter:description" content="Món quà ma thuật 3D lãng mạn và tinh tế dành tặng ngày Phụ nữ Việt Nam 20/10 ✨">
+    <meta name="twitter:image" content="assets/bouquet.jpg">
+    <meta name="theme-color" content="#1a0926">
+
+    <!-- Google Font 'Mali' -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+
+    <!-- Three.js & OrbitControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <style>
+        :root {
+            --bg-dark-1: #07040a;
+            --bg-dark-2: #1e0a2d;
+            --pink-primary: #ff4d8d;
+            --pink-glow: #ff2a85;
+            --pink-light: #fff0f3;
+            --pink-cream: #ffe4eb;
+            --gold-accent: #ffd166;
+            --text-wine: #7a1f3d;
+            --font-family: 'Mali', cursive, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--bg-dark-1) 0%, #150622 50%, var(--bg-dark-2) 100%);
+            font-family: var(--font-family);
+            color: #ffffff;
+            position: relative;
+        }
+
+        /* Ambient cosmic radial glow */
+        .cosmic-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 100vmax;
+            height: 100vmax;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(255, 105, 180, 0.22) 0%, rgba(138, 35, 115, 0.16) 38%, rgba(20, 5, 30, 0.65) 70%, transparent 95%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Starry & firefly background canvas */
+        #stars-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Floating Rose Petals Overlay */
+        .petals-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 3;
+            overflow: hidden;
+        }
+
+        .floating-petal {
+            position: absolute;
+            background: radial-gradient(circle, #ff80ab 20%, #ff4081 100%);
+            border-radius: 60% 40% 70% 30% / 50% 60% 40% 50%;
+            opacity: 0.75;
+            filter: drop-shadow(0 0 6px rgba(255, 64, 129, 0.6));
+            animation: floatPetal linear infinite;
+        }
+
+        @keyframes floatPetal {
+            0% {
+                transform: translateY(105vh) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.85;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(720deg) scale(1.1);
+                opacity: 0;
+            }
+        }
+
+        /* ==============================================
+           PHASE 1: BÓ HOA MA THUẬT (MÀN HÌNH MỞ ĐẦU)
+           ============================================== */
+        #phase-bouquet {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            perspective: 1200px;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #phase-bouquet.fade-out {
+            opacity: 0;
+            transform: scale(1.15);
+            pointer-events: none;
+        }
+
+        /* 3D Parallax Root Stage */
+        .bouquet-stage {
+            position: relative;
+            width: 360px;
+            height: 360px;
+            max-width: 88vw;
+            max-height: 88vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        @media (min-width: 768px) {
+            .bouquet-stage {
+                width: 440px;
+                height: 440px;
+            }
+        }
+
+        /* Floating animation for bouquet */
+        .bouquet-float-wrap {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-style: preserve-3d;
+            animation: floating 4.5s ease-in-out infinite;
+            will-change: transform;
+        }
+
+        @keyframes floating {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-14px) rotate(0.8deg);
+            }
+        }
+
+        /* ==============================================
+           AURA & GLOW: HÀO QUANG ĐA LỚP PHÍA SAU BÓ HOA
+           ============================================== */
+        .bouquet-aura-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateZ(-40px);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Layer 1: Radiant breathing bloom */
+        .aura-bloom {
+            position: absolute;
+            width: 380px;
+            height: 380px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 42, 133, 0.55) 0%, rgba(255, 105, 180, 0.38) 38%, rgba(162, 34, 136, 0.2) 65%, transparent 80%);
+            filter: blur(25px);
+            animation: aura-breath 3.4s ease-in-out infinite alternate;
+            will-change: transform, opacity;
+        }
+
+        @media (min-width: 768px) {
+            .aura-bloom {
+                width: 470px;
+                height: 470px;
+                filter: blur(32px);
+            }
+        }
+
+        @keyframes aura-breath {
+            0% {
+                transform: scale(0.92);
+                opacity: 0.65;
+            }
+            100% {
+                transform: scale(1.18);
+                opacity: 0.98;
+            }
+        }
+
+        /* Layer 2: Rotating sunrays / magical halo */
+        .aura-sunrays {
+            position: absolute;
+            width: 440px;
+            height: 440px;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                rgba(255, 105, 180, 0.28),
+                transparent 25deg,
+                rgba(255, 192, 224, 0.35) 50deg,
+                transparent 80deg,
+                rgba(255, 42, 133, 0.32) 115deg,
+                transparent 145deg,
+                rgba(255, 209, 102, 0.32) 180deg,
+                transparent 210deg,
+                rgba(255, 105, 180, 0.28) 245deg,
+                transparent 275deg,
+                rgba(255, 42, 133, 0.35) 310deg,
+                transparent 340deg,
+                rgba(255, 105, 180, 0.28) 360deg
+            );
+            filter: blur(14px);
+            animation: sunray-spin 26s linear infinite;
+            mix-blend-mode: screen;
+            opacity: 0.8;
+            will-change: transform;
+        }
+
+        @media (min-width: 768px) {
+            .aura-sunrays {
+                width: 530px;
+                height: 530px;
+            }
+        }
+
+        @keyframes sunray-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Layer 3: Celestial starlight orbital ring */
+        .aura-orbit-ring {
+            position: absolute;
+            width: 340px;
+            height: 340px;
+            border: 1.5px dashed rgba(255, 182, 218, 0.55);
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.45), inset 0 0 25px rgba(255, 105, 180, 0.25);
+            animation: ring-counter-spin 34s linear infinite;
+            opacity: 0.75;
+        }
+
+        @media (min-width: 768px) {
+            .aura-orbit-ring {
+                width: 410px;
+                height: 410px;
+            }
+        }
+
+        @keyframes ring-counter-spin {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        /* Layer 4: Interactive Halo Canvas (Orbiting Sparkles & Fireflies) */
+        #bouquet-sparkles-canvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateZ(10px);
+            width: 480px;
+            height: 480px;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* ==============================================
+           BOUQUET MAIN IMAGE CONTAINER
+           ============================================== */
+        .bouquet-image-container {
+            position: relative;
+            width: 285px;
+            height: 285px;
+            max-width: 76vw;
+            max-height: 76vw;
+            border-radius: 50%;
+            padding: 9px;
+            background: radial-gradient(circle, rgba(255, 105, 180, 0.45) 0%, rgba(255, 77, 141, 0.18) 60%, transparent 80%);
+            box-shadow: 0 0 65px rgba(255, 77, 141, 0.55), inset 0 0 35px rgba(255, 255, 255, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-style: preserve-3d;
+            transform: translateZ(30px);
+            transition: box-shadow 0.3s ease;
+            z-index: 4;
+        }
+
+        @media (min-width: 768px) {
+            .bouquet-image-container {
+                width: 340px;
+                height: 340px;
+            }
+        }
+
+        .bouquet-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.65));
+            pointer-events: none;
+            transition: transform 0.3s ease;
+        }
+
+        /* SVG Hold Progress Ring */
+        .hold-ring-svg {
+            position: absolute;
+            top: -16px;
+            left: -16px;
+            width: calc(100% + 32px);
+            height: calc(100% + 32px);
+            pointer-events: none;
+            transform: rotate(-90deg) translateZ(40px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 6;
+        }
+
+        .hold-ring-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.16);
+            stroke-width: 4.5;
+        }
+
+        .hold-ring-bar {
+            fill: none;
+            stroke: url(#ring-gradient);
+            stroke-width: 5.5;
+            stroke-linecap: round;
+            stroke-dasharray: 880;
+            stroke-dashoffset: 880;
+            transition: stroke-dashoffset 0.05s linear;
+            filter: drop-shadow(0 0 14px #ff2a85);
+        }
+
+        /* Holding state */
+        .bouquet-stage.holding .bouquet-float-wrap {
+            animation: bouquet-shake 0.1s infinite alternate;
+        }
+
+        .bouquet-stage.holding .hold-ring-svg {
+            opacity: 1;
+        }
+
+        .bouquet-stage.holding .bouquet-image-container {
+            box-shadow: 0 0 90px rgba(255, 42, 133, 0.95), inset 0 0 45px rgba(255, 255, 255, 0.7);
+        }
+
+        @keyframes bouquet-shake {
+            0% { transform: translate(2px, 2px) rotate(0.8deg) scale(0.98); }
+            50% { transform: translate(-2px, -1.5px) rotate(-0.8deg) scale(0.98); }
+            100% { transform: translate(1.5px, -2px) rotate(0.6deg) scale(0.98); }
+        }
+
+        /* ==============================================
+           CÁC TỪ KHÓA DỄ THƯƠNG BAY LÊN (KEYWORD PILLS)
+           ============================================== */
+        .keyword-pill {
+            position: absolute;
+            padding: 9px 18px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1.5px solid rgba(255, 182, 218, 0.75);
+            color: #fff0f5;
+            font-size: 0.98rem;
+            font-weight: 600;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45), 0 0 20px rgba(255, 77, 141, 0.5);
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.9);
+            opacity: 0;
+            transform: scale(0.2) translate(0, 0) translateZ(50px);
+            transition: all 0.75s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            z-index: 8;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        /* 6 positions around the bouquet */
+        .kw-pos-0 { top: -22px; left: -15px; --target-x: -20px; --target-y: -20px; --target-rot: -8deg; }
+        .kw-pos-1 { top: -22px; right: -15px; --target-x: 20px; --target-y: -20px; --target-rot: 8deg; }
+        .kw-pos-2 { top: 38%; left: -58px; --target-x: -28px; --target-y: 0px; --target-rot: -10deg; }
+        .kw-pos-3 { top: 38%; right: -58px; --target-x: 28px; --target-y: 0px; --target-rot: 10deg; }
+        .kw-pos-4 { bottom: -22px; left: -10px; --target-x: -16px; --target-y: 20px; --target-rot: -6deg; }
+        .kw-pos-5 { bottom: -22px; right: -10px; --target-x: 16px; --target-y: 20px; --target-rot: 6deg; }
+
+        @media (min-width: 768px) {
+            .keyword-pill {
+                font-size: 1.1rem;
+                padding: 10px 22px;
+            }
+            .kw-pos-0 { top: -30px; left: -32px; }
+            .kw-pos-1 { top: -30px; right: -32px; }
+            .kw-pos-2 { top: 38%; left: -85px; }
+            .kw-pos-3 { top: 38%; right: -85px; }
+            .kw-pos-4 { bottom: -28px; left: -25px; }
+            .kw-pos-5 { bottom: -28px; right: -25px; }
+        }
+
+        .bouquet-stage.popped .keyword-pill {
+            opacity: 1;
+            transform: scale(1) rotate(var(--target-rot)) translateZ(50px);
+        }
+
+        /* ==============================================
+           GLOWING HINT TEXT & TAPPING HAND ICON
+           ============================================== */
+        .hint-container {
+            margin-top: 38px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            z-index: 15;
+        }
+
+        .hint-text-badge {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1.5px solid rgba(255, 105, 180, 0.6);
+            padding: 12px 28px;
+            border-radius: 999px;
+            font-size: 1.12rem;
+            font-weight: 600;
+            letter-spacing: 0.6px;
+            color: #ffffff;
+            text-shadow: 0 0 10px #ff69b4, 0 0 20px #ff2a85, 0 0 35px #ff2a85, 0 0 50px #ff4d8d;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 77, 141, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.25);
+            animation: pulse-glow 2.2s infinite ease-in-out;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .hand-tap-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            animation: finger-tap 1.6s ease-in-out infinite;
+            filter: drop-shadow(0 0 8px #ff2a85);
+        }
+
+        @keyframes finger-tap {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            30% {
+                transform: translateY(-5px) scale(1.15) rotate(-8deg);
+            }
+            50% {
+                transform: translateY(3px) scale(0.95) rotate(4deg);
+            }
+            70% {
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .hint-sparkle-star {
+            color: #ffd166;
+            animation: sparkle-rotate 2s linear infinite;
+        }
+
+        @keyframes sparkle-rotate {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+            50% { transform: scale(1.3) rotate(180deg); opacity: 1; }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 77, 141, 0.4);
+                border-color: rgba(255, 105, 180, 0.5);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6), 0 0 40px rgba(255, 77, 141, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.4);
+                border-color: rgba(255, 105, 180, 0.95);
+                transform: scale(1.035);
+            }
+        }
+
+        .hint-subtext {
+            font-size: 0.9rem;
+            color: rgba(255, 230, 245, 0.75);
+            letter-spacing: 0.4px;
+            text-shadow: 0 0 8px rgba(0,0,0,0.6);
+        }
+
+        /* Burst overlay during transition with luminous lens flare */
+        #burst-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 1) 0%, rgba(255, 240, 180, 0.95) 15%, rgba(255, 77, 141, 0.9) 45%, rgba(138, 20, 95, 0.95) 75%, #07040a 100%);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 50;
+            transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        #burst-overlay.active {
+            opacity: 1;
+        }
+
+        /* ==============================================
+           PHASE 2: NGÂN HÀ ĐIỀU ƯỚC 3D (3D WISHING GALAXY)
+           ============================================== */
+        #phase-galaxy {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #phase-galaxy.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #webgl-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Persistent Global UI Top (Visible from Phase 1 & 2) */
+        .global-ui-top {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .phase2-control {
+            display: none !important;
+            opacity: 0;
+            transform: scale(0.6);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        body.in-galaxy .phase2-control {
+            display: flex !important;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .glass-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35), 0 0 15px rgba(255, 105, 180, 0.25);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        .glass-btn:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.22);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(255, 77, 141, 0.6);
+            border-color: rgba(255, 105, 180, 0.7);
+        }
+
+        .glass-btn:active {
+            transform: scale(0.94);
+        }
+
+        .glass-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
+        }
+
+        /* Heartbeat Pulse for Letter Button */
+        .heartbeat-btn {
+            animation: envelope-pulse 1.6s infinite ease-in-out;
+            background: rgba(255, 105, 180, 0.2);
+            border-color: rgba(255, 105, 180, 0.5);
+        }
+
+        @keyframes envelope-pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35), 0 0 15px rgba(255, 105, 180, 0.3);
+            }
+            15% {
+                transform: scale(1.15);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 25px rgba(255, 42, 133, 0.7);
+            }
+            30% {
+                transform: scale(1);
+            }
+            45% {
+                transform: scale(1.1);
+                box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 42, 133, 0.55);
+            }
+        }
+
+        .badge-pulse {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff2a85;
+            box-shadow: 0 0 8px #ff2a85;
+            animation: badge-pulse-anim 1.5s infinite;
+        }
+
+        @keyframes badge-pulse-anim {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.6; }
+        }
+
+        /* Bottom hint badge in Phase 2 */
+        .galaxy-hint-bottom {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20, 8, 32, 0.68);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 105, 180, 0.3);
+            padding: 8px 22px;
+            border-radius: 999px;
+            font-size: 0.86rem;
+            color: rgba(255, 235, 245, 0.9);
+            pointer-events: none;
+            z-index: 30;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            letter-spacing: 0.3px;
+            text-align: center;
+            max-width: 90vw;
+            white-space: nowrap;
+        }
+
+        .galaxy-hint-bottom svg {
+            width: 16px;
+            height: 16px;
+            fill: #ff69b4;
+            flex-shrink: 0;
+        }
+
+        /* ==============================================
+           POPUP: BỨC THƯ TÌNH DÀNH RIÊNG CHO ÁNH TUYẾT
+           ============================================== */
+        .letter-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 4, 18, 0.78);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            padding: 20px;
+        }
+
+        .letter-modal-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .letter-card {
+            position: relative;
+            width: 100%;
+            max-width: 490px;
+            background: linear-gradient(155deg, #fff5f8 0%, #fff0f3 50%, #ffe4ec 100%);
+            border-radius: 26px;
+            padding: 38px 32px 34px 32px;
+            box-shadow: 0 25px 65px rgba(0, 0, 0, 0.65), 0 0 35px rgba(255, 105, 180, 0.35);
+            border: 2px solid rgba(255, 182, 193, 0.85);
+            transform: scale(0.85) translateY(30px);
+            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+            color: var(--text-wine);
+            overflow: hidden;
+        }
+
+        .letter-modal-backdrop.open .letter-card {
+            transform: scale(1) translateY(0);
+        }
+
+        .letter-seal {
+            position: absolute;
+            top: 18px;
+            left: 28px;
+            width: 32px;
+            height: 32px;
+            opacity: 0.75;
+        }
+
+        .letter-close-btn {
+            position: absolute;
+            top: 16px;
+            right: 18px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(194, 24, 91, 0.12);
+            border: none;
+            color: #c2185b;
+            font-size: 1.4rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .letter-close-btn:hover {
+            background: #c2185b;
+            color: #ffffff;
+            transform: scale(1.1);
+        }
+
+        .letter-title {
+            font-size: 1.55rem;
+            font-weight: 700;
+            color: #8a1f44;
+            margin-bottom: 20px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .letter-content {
+            font-size: 1.12rem;
+            line-height: 1.85;
+            min-height: 135px;
+            font-weight: 500;
+            color: #55192e;
+            white-space: pre-wrap;
+            position: relative;
+        }
+
+        .typewriter-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.15em;
+            background-color: #c2185b;
+            margin-left: 2px;
+            vertical-align: middle;
+            animation: blink 0.8s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .letter-signature {
+            margin-top: 26px;
+            text-align: right;
+            font-size: 1.25rem;
+            font-weight: 700;
+            font-style: italic;
+            color: #8a1f44;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.6s ease;
+        }
+
+        .letter-signature.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card-bg-heart {
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            width: 130px;
+            height: 130px;
+            fill: rgba(255, 182, 193, 0.35);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Sound bars inside audio button */
+        .audio-bars {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 18px;
+        }
+
+        .audio-bar {
+            width: 3px;
+            height: 100%;
+            background: #ffffff;
+            border-radius: 2px;
+            animation: sound-bar 1.2s infinite ease-in-out;
+        }
+
+        .audio-bar:nth-child(1) { animation-delay: 0.1s; height: 40%; }
+        .audio-bar:nth-child(2) { animation-delay: 0.3s; height: 90%; }
+        .audio-bar:nth-child(3) { animation-delay: 0.2s; height: 60%; }
+        .audio-bar:nth-child(4) { animation-delay: 0.4s; height: 75%; }
+
+        .audio-muted .audio-bar {
+            animation: none !important;
+            height: 4px !important;
+            opacity: 0.5;
+        }
+
+        @keyframes sound-bar {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+        }
+
+        /* ==============================================
+           POPUP: THIỆP PHA LÊ CHI TIẾT (KHI CHẠM THIỆP 3D)
+           ============================================== */
+        .crystal-lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(12, 4, 20, 0.82);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 120;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease;
+            padding: 20px;
+        }
+
+        .crystal-lightbox.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .crystal-popup-card {
+            position: relative;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 220, 240, 0.12) 100%);
+            border: 2px solid rgba(255, 182, 218, 0.7);
+            border-radius: 24px;
+            padding: 36px 30px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), 0 0 35px rgba(255, 105, 180, 0.45);
+            max-width: 440px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transform: scale(0.85);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            color: #ffffff;
+        }
+
+        .crystal-lightbox.open .crystal-popup-card {
+            transform: scale(1);
+        }
+
+        .crystal-popup-icon {
+            font-size: 3.2rem;
+            margin-bottom: 14px;
+            filter: drop-shadow(0 0 16px rgba(255, 105, 180, 0.8));
+        }
+
+        .crystal-popup-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #ffd1dc;
+            text-shadow: 0 0 12px rgba(255, 77, 141, 0.8);
+            margin-bottom: 6px;
+        }
+
+        .crystal-popup-subtitle {
+            font-size: 1rem;
+            color: #ffd166;
+            margin-bottom: 18px;
+            font-weight: 500;
+        }
+
+        .crystal-popup-divider {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff69b4, transparent);
+            margin-bottom: 18px;
+        }
+
+        .crystal-popup-message {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #ffffff;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            font-weight: 400;
+        }
+
+        .crystal-close-btn {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-size: 1.3rem;
+            transition: all 0.25s ease;
+        }
+
+        .crystal-close-btn:hover {
+            background: #ff2a85;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Deep cosmic glow & starry background -->
+    <div class="cosmic-glow"></div>
+    <canvas id="stars-canvas"></canvas>
+
+    <!-- Floating rose petals -->
+    <div class="petals-container" id="petals-container"></div>
+
+    <!-- Burst overlay during transition -->
+    <div id="burst-overlay"></div>
+
+    <!-- Background Music Audio Element -->
+    <audio id="bg-audio" preload="auto" loop></audio>
+
+    <!-- ==============================================
+         PHASE 1: BÓ HOA MA THUẬT (MÀN HÌNH MỞ ĐẦU)
+         ============================================== -->
+    <section id="phase-bouquet">
+        <div class="bouquet-stage" id="bouquet-stage">
+            <div class="bouquet-float-wrap" id="bouquet-parallax-wrap">
+
+                <!-- MULTI-LAYER RADIANT AURA & GLOW BEHIND BOUQUET -->
+                <div class="bouquet-aura-container" id="bouquet-aura-box">
+                    <div class="aura-bloom"></div>
+                    <div class="aura-sunrays"></div>
+                    <div class="aura-orbit-ring"></div>
+                </div>
+
+                <!-- ORBITING SPARKLES & FIREFLIES CANVAS -->
+                <canvas id="bouquet-sparkles-canvas"></canvas>
+
+                <!-- SVG Hold Progress Ring -->
+                <svg class="hold-ring-svg" viewBox="0 0 300 300">
+                    <defs>
+                        <linearGradient id="ring-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#ff7eb3" />
+                            <stop offset="50%" stop-color="#ff2a85" />
+                            <stop offset="100%" stop-color="#ffd166" />
+                        </linearGradient>
+                    </defs>
+                    <circle class="hold-ring-bg" cx="150" cy="150" r="140"></circle>
+                    <circle class="hold-ring-bar" id="hold-ring-bar" cx="150" cy="150" r="140"></circle>
+                </svg>
+
+                <!-- Bouquet Main Image Container (with 3D pop depth) -->
+                <div class="bouquet-image-container" id="bouquet-circle">
+                    <img id="bouquet-img-el" class="bouquet-img" src="assets/bouquet.jpg" alt="Bó hoa hồng ma thuật 20/10">
+                </div>
+
+                <!-- 6 Keyword Pills popped around bouquet -->
+                <div class="keyword-pill kw-pos-0" id="kw-0"><span>🌸</span><span>Xinh đẹp</span></div>
+                <div class="keyword-pill kw-pos-1" id="kw-1"><span>✨</span><span>Rạng rỡ</span></div>
+                <div class="keyword-pill kw-pos-2" id="kw-2"><span>☀️</span><span>Vui vẻ</span></div>
+                <div class="keyword-pill kw-pos-3" id="kw-3"><span>💖</span><span>Hạnh phúc</span></div>
+                <div class="keyword-pill kw-pos-4" id="kw-4"><span>🍀</span><span>May mắn</span></div>
+                <div class="keyword-pill kw-pos-5" id="kw-5"><span>🕊️</span><span>Bình an</span></div>
+            </div>
+        </div>
+
+        <!-- Glowing Hint Text with animated tapping hand icon -->
+        <div class="hint-container">
+            <div class="hint-text-badge" id="hint-badge">
+                <span class="hand-tap-icon" id="hint-icon">👆</span>
+                <span id="hint-text">Chạm vào bó hoa nhé</span>
+                <span class="hint-sparkle-star">✨</span>
+            </div>
+            <div class="hint-subtext" id="hint-subtext">Món quà ma thuật ngày Phụ nữ Việt Nam 20/10 🌸</div>
+        </div>
+    </section>
+
+    <!-- ==============================================
+         PHASE 2: NGÂN HÀ ĐIỀU ƯỚC & ĐÓA HOA 3D BUNG NỞ
+         ============================================== -->
+    <section id="phase-galaxy">
+        <canvas id="webgl-canvas"></canvas>
+
+        <!-- Persistent Global Controls (Top-Right) -->
+        <div class="global-ui-top">
+            <!-- Music Toggle Button (Accessible in both Phase 1 & 2) -->
+            <button class="glass-btn" id="btn-music" title="Bật / Tắt âm thanh">
+                <div class="audio-bars" id="audio-bars-icon">
+                    <div class="audio-bar"></div>
+                    <div class="audio-bar"></div>
+                    <div class="audio-bar"></div>
+                    <div class="audio-bar"></div>
+                </div>
+            </button>
+
+            <!-- Letter Popup Button with Heartbeat effect (Phase 2) -->
+            <button class="glass-btn heartbeat-btn phase2-control" id="btn-letter" title="Mở bức thư chúc mừng 20/10">
+                <span class="badge-pulse"></span>
+                <svg viewBox="0 0 24 24">
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+            </button>
+
+            <!-- Close / Back Button (Phase 2) -->
+            <button class="glass-btn phase2-control" id="btn-back" title="Quay lại bó hoa">
+                <svg viewBox="0 0 24 24">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Bottom Guidance Badge -->
+        <div class="galaxy-hint-bottom">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/>
+            </svg>
+            <span>Kéo để xoay không gian • Chụm hai ngón để phóng to</span>
+        </div>
+    </section>
+
+    <!-- ==============================================
+         POPUP BỨC THƯ TÌNH DÀNH RIÊNG CHO ÁNH TUYẾT
+         ============================================== -->
+    <div class="letter-modal-backdrop" id="letter-modal">
+        <div class="letter-card">
+            <!-- Close Button -->
+            <button class="letter-close-btn" id="btn-close-letter" aria-label="Đóng bức thư">&times;</button>
+
+            <!-- Floral Stamp -->
+            <svg class="letter-seal" viewBox="0 0 24 24" fill="#c2185b">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+
+            <!-- Title -->
+            <div class="letter-title" id="letter-title-el">Thân gửi, 🌸</div>
+
+            <!-- Typewriter Content -->
+            <div class="letter-content" id="letter-content-el"></div>
+
+            <!-- Signature -->
+            <div class="letter-signature" id="letter-sig-el">Hoàng Duy Mạnh ✨</div>
+
+            <!-- Decorative background heart -->
+            <svg class="card-bg-heart" viewBox="0 0 24 24">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- ==============================================
+         POPUP THIỆP PHA LÊ CHI TIẾT KHI CLICK THIỆP 3D
+         ============================================== -->
+    <div class="crystal-lightbox" id="crystal-lightbox">
+        <div class="crystal-popup-card">
+            <button class="crystal-close-btn" id="btn-close-crystal">&times;</button>
+            <div class="crystal-popup-icon" id="cp-icon">🌸</div>
+            <div class="crystal-popup-title" id="cp-title">20/10 Yêu Thương</div>
+            <div class="crystal-popup-subtitle" id="cp-subtitle">Ngày Phụ Nữ Việt Nam</div>
+            <div class="crystal-popup-divider"></div>
+            <div class="crystal-popup-message" id="cp-message">Chúc bạn một ngày 20/10 ngập tràn niềm vui và hạnh phúc ✨</div>
+        </div>
+    </div>
+
+    <!-- ==============================================
+         JAVASCRIPT LOGIC & CẤU HÌNH (CONFIG)
+         ============================================== -->
+    <script>
+        /* =========================================================================
+           V. CẤU HÌNH DỄ DÀNG THAY ĐỔI (CONFIG)
+           Món quà ngày Phụ nữ Việt Nam 20/10 lãng mạn & tinh tế
+           ========================================================================= */
+        const CONFIG = {
+            title: "Chúc Mừng Ngày Phụ Nữ Việt Nam 20/10 🌸",
+            bouquetImage: 'assets/bouquet.jpg',
+            // Bài hát nền lãng mạn: "Thế Giới Của Anh"
+            musicUrl: 'assets/THẾ GIỚI CỦA ANH.mp3',
+
+            // Từ khóa bay lên khi chạm vào bó hoa ở Giai đoạn 1 (Hiệu ứng nảy mềm mại)
+            keywords: [
+                { text: "Xinh đẹp", icon: "🌸" },
+                { text: "Rạng rỡ", icon: "✨" },
+                { text: "Vui vẻ", icon: "☀️" },
+                { text: "Hạnh phúc", icon: "💖" },
+                { text: "May mắn", icon: "🍀" },
+                { text: "Bình an", icon: "🕊️" }
+            ],
+
+            // 12 Tấm thiệp kính mờ (Glassmorphism Cards) bay vòng quanh đóa hoa 3D
+            crystalCards: [
+                { icon: "🌸", title: "Xinh Đẹp & Rạng Rỡ", subtitle: "Nụ cười tỏa nắng", message: "Nụ cười của bạn chính là điều ngọt ngào và rạng rỡ nhất ✨" },
+                { icon: "✨", title: "Tỏa Sáng Tự Tin", subtitle: "Lung linh mỗi ngày", message: "Mong bạn luôn hồn nhiên, vui tươi và tràn đầy năng lượng tích cực 🌷" },
+                { icon: "🌙", title: "Bình Yên Mỗi Tối", subtitle: "Giấc mơ êm đềm", message: "Chúc màn đêm luôn ôm ấp bạn bằng những giấc mơ dịu dàng và bình yên 💫" },
+                { icon: "🌷", title: "Dịu Dàng Như Hoa", subtitle: "Những điều tốt lành", message: "Mong tất cả những điều dịu dàng nhất của thế giới sẽ luôn tìm đến bạn 💖" },
+                { icon: "🎀", title: "Hồn Nhiên & Tươi Trẻ", subtitle: "Luôn là chính bạn", message: "Hãy cứ vô tư cười thật nhiều, bạn lúc nào cũng vô cùng đáng yêu 🌸" },
+                { icon: "🍀", title: "May Mắn Tràn Đầy", subtitle: "Vạn sự hanh thông", message: "Chúc bạn luôn gặp nhiều may mắn, mọi dự định đều suôn sẻ bình an 🍀" },
+                { icon: "☀️", title: "Nụ Cười Rạng Rỡ", subtitle: "Nắng mai ấm áp", message: "Mỗi ngày mới đến, hãy luôn giữ nụ cười thật tươi và yêu đời nhé ☀️" },
+                { icon: "🧸", title: "Ấm Áp & Bình An", subtitle: "Bình yên tâm hồn", message: "Mong rằng cuộc sống sẽ luôn dành cho bạn những điều nhẹ nhàng và ấm áp nhất 🧸" },
+                { icon: "🧁", title: "Ngọt Ngào Tháng 10", subtitle: "20/10 trọn vẹn", message: "Chúc bạn một ngày 20/10 ngập tràn niềm vui, hoa và những lời chúc ý nghĩa 🍰" },
+                { icon: "🌟", title: "Một Nửa Thế Giới", subtitle: "Điều tuyệt vời nhất", message: "Bạn là một đóa hoa xinh đẹp và đặc biệt nhất trong thế giới này 🌟" },
+                { icon: "💌", title: "Món Quà Ý Nghĩa", subtitle: "Tấm lòng chân thành", message: "Món quà nhỏ này được chuẩn bị bằng cả sự chân thành dành tặng bạn ngày 20/10 ❤️" },
+                { icon: "🌈", title: "Hạnh Phúc Bất Tận", subtitle: "Mỗi ngày đều vui", message: "Mong mọi bước đường bạn đi đều ngập tràn niềm vui và những điều may mắn 🌈" }
+            ],
+
+            // Các câu chúc 3D phát sáng (Neon Glow Text) ngọt ngào, tinh tế (không dùng tên riêng)
+            greetings: [
+                "Chúc một nửa thế giới 20/10 ngập tràn niềm vui ✨",
+                "Luôn giữ nụ cười tươi và rạng rỡ thế này nhé",
+                "Mong mọi điều dịu dàng nhất sẽ đến với bạn",
+                "Chúc bạn ngày hôm nay và 365 ngày đều hạnh phúc 🌸",
+                "Mong rằng cuộc sống luôn đối xử dịu dàng với bạn",
+                "Chúc bạn luôn gặp nhiều may mắn và bình an"
+            ],
+
+            // Bức thư tình cảm (Popup Bức thư)
+            letter: {
+                title: "Thân gửi,",
+                content: "Nhân ngày 20/10, mình có một món quà nhỏ tự tay chuẩn bị dành tặng cho bạn. Chúc bạn luôn xinh đẹp, rạng rỡ, ngập tràn niềm vui và luôn nở nụ cười thật tươi trên môi. Mong rằng mọi điều tốt đẹp và dịu dàng nhất sẽ luôn đồng hành cùng bạn trên chặng đường phía trước!",
+                signature: "Hoàng Duy Mạnh ✨"
+            }
+        };
+
+        /* =========================================================================
+           1. BỐI CẢNH & PHÔNG NỀN: SAO LẤP LÁNH, SAO BĂNG & CÁNH HOA BAY
+           ========================================================================= */
+        const starsCanvas = document.getElementById('stars-canvas');
+        const starsCtx = starsCanvas.getContext('2d');
+        let stars = [];
+        let shootingStars = [];
+
+        function resizeStarsCanvas() {
+            starsCanvas.width = window.innerWidth;
+            starsCanvas.height = window.innerHeight;
+            initStars();
+        }
+
+        function initStars() {
+            stars = [];
+            const count = Math.min(180, Math.floor((starsCanvas.width * starsCanvas.height) / 6000));
+            for (let i = 0; i < count; i++) {
+                stars.push({
+                    x: Math.random() * starsCanvas.width,
+                    y: Math.random() * starsCanvas.height,
+                    radius: Math.random() * 1.6 + 0.4,
+                    alpha: Math.random() * 0.8 + 0.2,
+                    speed: Math.random() * 0.02 + 0.008,
+                    color: Math.random() > 0.3 ? '#ffffff' : (Math.random() > 0.5 ? '#ffd2e8' : '#ffe8a3')
+                });
+            }
+        }
+
+        function spawnShootingStar() {
+            const startX = Math.random() * starsCanvas.width * 0.85;
+            const startY = Math.random() * starsCanvas.height * 0.35;
+            const length = Math.random() * 90 + 80;
+            const angle = (Math.PI / 4) + (Math.random() * 0.2 - 0.1);
+            shootingStars.push({
+                x: startX,
+                y: startY,
+                length: length,
+                speed: Math.random() * 5 + 6,
+                angle: angle,
+                opacity: 1,
+                decay: Math.random() * 0.015 + 0.012
+            });
+        }
+
+        function renderStars() {
+            starsCtx.clearRect(0, 0, starsCanvas.width, starsCanvas.height);
+
+            for (let star of stars) {
+                star.alpha += star.speed;
+                const currentAlpha = Math.abs(Math.sin(star.alpha));
+                starsCtx.beginPath();
+                starsCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                starsCtx.fillStyle = star.color;
+                starsCtx.globalAlpha = currentAlpha;
+                starsCtx.shadowBlur = star.radius > 1.2 ? 6 : 0;
+                starsCtx.shadowColor = star.color;
+                starsCtx.fill();
+            }
+
+            for (let i = shootingStars.length - 1; i >= 0; i--) {
+                const s = shootingStars[i];
+                const endX = s.x - Math.cos(s.angle) * s.length;
+                const endY = s.y - Math.sin(s.angle) * s.length;
+
+                const grad = starsCtx.createLinearGradient(s.x, s.y, endX, endY);
+                grad.addColorStop(0, `rgba(255, 255, 255, ${s.opacity})`);
+                grad.addColorStop(0.35, `rgba(255, 105, 180, ${s.opacity * 0.85})`);
+                grad.addColorStop(1, `rgba(255, 105, 180, 0)`);
+
+                starsCtx.beginPath();
+                starsCtx.moveTo(s.x, s.y);
+                starsCtx.lineTo(endX, endY);
+                starsCtx.strokeStyle = grad;
+                starsCtx.lineWidth = 2.4;
+                starsCtx.lineCap = 'round';
+                starsCtx.globalAlpha = 1;
+                starsCtx.shadowBlur = 10;
+                starsCtx.shadowColor = '#ff2a85';
+                starsCtx.stroke();
+
+                s.x += Math.cos(s.angle) * s.speed;
+                s.y += Math.sin(s.angle) * s.speed;
+                s.opacity -= s.decay;
+
+                if (s.opacity <= 0 || s.x > starsCanvas.width + 100 || s.y > starsCanvas.height + 100) {
+                    shootingStars.splice(i, 1);
+                }
+            }
+
+            if (Math.random() < 0.016 && shootingStars.length < 3) {
+                spawnShootingStar();
+            }
+
+            starsCtx.globalAlpha = 1;
+            starsCtx.shadowBlur = 0;
+            requestAnimationFrame(renderStars);
+        }
+
+        window.addEventListener('resize', resizeStarsCanvas);
+        resizeStarsCanvas();
+        renderStars();
+
+        // Floating rose petals generator
+        const petalsContainer = document.getElementById('petals-container');
+        function initFloatingPetals() {
+            const count = 18;
+            for (let i = 0; i < count; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'floating-petal';
+                const size = Math.random() * 12 + 10;
+                petal.style.width = `${size}px`;
+                petal.style.height = `${size * 1.3}px`;
+                petal.style.left = `${Math.random() * 100}%`;
+                petal.style.animationDuration = `${Math.random() * 7 + 8}s`;
+                petal.style.animationDelay = `${Math.random() * 8}s`;
+                petalsContainer.appendChild(petal);
+            }
+        }
+        initFloatingPetals();
+
+        /* =========================================================================
+           2. HẠT SÁNG & ĐOM ĐÓM BAY QUANH BÓ HOA (BOUQUET SPARKLES CANVAS)
+           ========================================================================= */
+        const bouquetSparklesCanvas = document.getElementById('bouquet-sparkles-canvas');
+        const bCtx = bouquetSparklesCanvas.getContext('2d');
+        let bouquetMotes = [];
+
+        function initBouquetSparkles() {
+            bouquetSparklesCanvas.width = 480;
+            bouquetSparklesCanvas.height = 480;
+            bouquetMotes = [];
+            const count = 32;
+
+            for (let i = 0; i < count; i++) {
+                bouquetMotes.push({
+                    angle: Math.random() * Math.PI * 2,
+                    radiusX: 135 + Math.random() * 75,
+                    radiusY: 120 + Math.random() * 65,
+                    speed: (Math.random() * 0.012 + 0.008) * (Math.random() > 0.5 ? 1 : -1),
+                    size: Math.random() * 2.8 + 1.2,
+                    color: Math.random() > 0.4 ? '#ff69b4' : (Math.random() > 0.5 ? '#ffd166' : '#ffffff'),
+                    pulseSpeed: Math.random() * 0.04 + 0.02,
+                    pulseVal: Math.random() * Math.PI,
+                    tilt: (Math.random() - 0.5) * 0.5
+                });
+            }
+        }
+
+        function renderBouquetSparkles() {
+            bCtx.clearRect(0, 0, 480, 480);
+            const cx = 240;
+            const cy = 240;
+
+            for (let m of bouquetMotes) {
+                m.angle += m.speed;
+                m.pulseVal += m.pulseSpeed;
+                const alpha = Math.abs(Math.sin(m.pulseVal)) * 0.75 + 0.25;
+
+                const rawX = Math.cos(m.angle) * m.radiusX;
+                const rawY = Math.sin(m.angle) * m.radiusY;
+                const x = cx + rawX * Math.cos(m.tilt) - rawY * Math.sin(m.tilt);
+                const y = cy + rawX * Math.sin(m.tilt) + rawY * Math.cos(m.tilt);
+
+                bCtx.beginPath();
+                bCtx.arc(x, y, m.size, 0, Math.PI * 2);
+                bCtx.fillStyle = m.color;
+                bCtx.globalAlpha = alpha;
+                bCtx.shadowBlur = 10;
+                bCtx.shadowColor = m.color;
+                bCtx.fill();
+            }
+
+            bCtx.globalAlpha = 1;
+            bCtx.shadowBlur = 0;
+            requestAnimationFrame(renderBouquetSparkles);
+        }
+
+        initBouquetSparkles();
+        renderBouquetSparkles();
+
+        /* =========================================================================
+           3. AUDIO & NHẠC NỀN (BACKGROUND MUSIC)
+           ========================================================================= */
+        const bgAudio = document.getElementById('bg-audio');
+        const btnMusic = document.getElementById('btn-music');
+        let isAudioPlaying = false;
+
+        bgAudio.src = encodeURI(CONFIG.musicUrl);
+        bgAudio.onerror = () => {
+            console.log('Falling back to default music.mp3');
+            bgAudio.src = 'assets/music.mp3';
+        };
+
+        function startMusic() {
+            if (!isAudioPlaying) {
+                bgAudio.play().then(() => {
+                    isAudioPlaying = true;
+                    btnMusic.classList.remove('audio-muted');
+                }).catch(err => {
+                    console.log('Audio autoplay waiting for user interaction:', err);
+                });
+            }
+        }
+
+        btnMusic.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (isAudioPlaying) {
+                bgAudio.pause();
+                isAudioPlaying = false;
+                btnMusic.classList.add('audio-muted');
+            } else {
+                bgAudio.play();
+                isAudioPlaying = true;
+                btnMusic.classList.remove('audio-muted');
+            }
+        });
+
+        /* =========================================================================
+           4. GIAI ĐOẠN 1: BÓ HOA MA THUẬT & 3D PARALLAX INTERACTION
+           ========================================================================= */
+        const phaseBouquet = document.getElementById('phase-bouquet');
+        const bouquetStage = document.getElementById('bouquet-stage');
+        const bouquetParallaxWrap = document.getElementById('bouquet-parallax-wrap');
+        const bouquetAuraBox = document.getElementById('bouquet-aura-box');
+        const bouquetCircle = document.getElementById('bouquet-circle');
+        const bouquetImgEl = document.getElementById('bouquet-img-el');
+        const hintBadge = document.getElementById('hint-badge');
+        const hintText = document.getElementById('hint-text');
+        const hintIcon = document.getElementById('hint-icon');
+        const hintSubtext = document.getElementById('hint-subtext');
+        const holdRingBar = document.getElementById('hold-ring-bar');
+        const burstOverlay = document.getElementById('burst-overlay');
+
+        bouquetImgEl.src = CONFIG.bouquetImage;
+        bouquetImgEl.onerror = () => {
+            bouquetImgEl.src = 'https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=800&auto=format&fit=crop&q=80';
+        };
+
+        // Populate keywords
+        for (let i = 0; i < CONFIG.keywords.length; i++) {
+            const kwEl = document.getElementById(`kw-${i}`);
+            if (kwEl) {
+                kwEl.innerHTML = `<span>${CONFIG.keywords[i].icon}</span><span>${CONFIG.keywords[i].text}</span>`;
+            }
+        }
+
+        // ==========================================
+        // 3D PARALLAX EFFECT FOR BOUQUET
+        // ==========================================
+        let targetTiltX = 0;
+        let targetTiltY = 0;
+        let currentTiltX = 0;
+        let currentTiltY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            if (phaseBouquet.style.display === 'none') return;
+            const x = (e.clientX / window.innerWidth) * 2 - 1;
+            const y = (e.clientY / window.innerHeight) * 2 - 1;
+            targetTiltX = -y * 15;
+            targetTiltY = x * 15;
+        });
+
+        window.addEventListener('deviceorientation', (e) => {
+            if (phaseBouquet.style.display === 'none') return;
+            if (e.gamma !== null && e.beta !== null) {
+                targetTiltY = Math.max(-18, Math.min(18, e.gamma * 0.45));
+                targetTiltX = Math.max(-18, Math.min(18, (e.beta - 45) * 0.35));
+            }
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (phaseBouquet.style.display === 'none') return;
+            if (e.touches && e.touches[0]) {
+                const x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+                const y = (e.touches[0].clientY / window.innerHeight) * 2 - 1;
+                targetTiltX = -y * 14;
+                targetTiltY = x * 14;
+            }
+        }, { passive: true });
+
+        function animateParallax() {
+            if (phaseBouquet.style.display !== 'none') {
+                currentTiltX += (targetTiltX - currentTiltX) * 0.08;
+                currentTiltY += (targetTiltY - currentTiltY) * 0.08;
+
+                bouquetStage.style.transform = `rotateX(${currentTiltX.toFixed(2)}deg) rotateY(${currentTiltY.toFixed(2)}deg)`;
+
+                if (bouquetAuraBox) {
+                    bouquetAuraBox.style.transform = `translate(calc(-50% + ${(-currentTiltY * 1.6).toFixed(1)}px), calc(-50% + ${(currentTiltX * 1.6).toFixed(1)}px)) translateZ(-40px)`;
+                }
+            }
+            requestAnimationFrame(animateParallax);
+        }
+        animateParallax();
+
+        // ==========================================
+        // TAP & HOLD INTERACTIONS
+        // ==========================================
+        let isPopped = false;
+        let isHolding = false;
+        let holdStartTime = 0;
+        let holdAnimFrame = null;
+        const HOLD_DURATION = 1500;
+        const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * 140;
+
+        function handleBouquetClick() {
+            startMusic();
+            if (!isPopped) {
+                isPopped = true;
+                bouquetStage.classList.add('popped');
+                hintIcon.textContent = "⏳";
+                hintText.textContent = "Ấn giữ bó hoa để mở điều bất ngờ";
+                hintSubtext.textContent = "Nhấn và giữ khoảng 1.5 giây để khám phá Ngân hà Điều Ước ✨";
+            }
+        }
+
+        bouquetStage.addEventListener('click', () => {
+            if (!isPopped) handleBouquetClick();
+        });
+
+        hintBadge.addEventListener('click', () => {
+            if (!isPopped) handleBouquetClick();
+        });
+
+        function startHold(e) {
+            if (!isPopped) return;
+            isHolding = true;
+            holdStartTime = performance.now();
+            bouquetStage.classList.add('holding');
+
+            if (navigator.vibrate) {
+                try { navigator.vibrate(25); } catch(e){}
+            }
+
+            function updateHoldProgress(now) {
+                if (!isHolding) return;
+                const elapsed = now - holdStartTime;
+                const progress = Math.min(elapsed / HOLD_DURATION, 1);
+                const offset = CIRCLE_CIRCUMFERENCE * (1 - progress);
+                holdRingBar.style.strokeDashoffset = offset;
+
+                if (progress >= 1) {
+                    triggerGalaxyTransition();
+                    cancelHold();
+                    return;
+                }
+                holdAnimFrame = requestAnimationFrame(updateHoldProgress);
+            }
+
+            holdAnimFrame = requestAnimationFrame(updateHoldProgress);
+        }
+
+        function cancelHold() {
+            if (!isHolding) return;
+            isHolding = false;
+            bouquetStage.classList.remove('holding');
+            if (holdAnimFrame) {
+                cancelAnimationFrame(holdAnimFrame);
+                holdAnimFrame = null;
+            }
+            holdRingBar.style.strokeDashoffset = CIRCLE_CIRCUMFERENCE;
+        }
+
+        bouquetStage.addEventListener('mousedown', (e) => {
+            if (e.button === 0) startHold(e);
+        });
+        window.addEventListener('mouseup', cancelHold);
+        bouquetStage.addEventListener('mouseleave', cancelHold);
+
+        bouquetStage.addEventListener('touchstart', (e) => {
+            startHold(e);
+        }, { passive: true });
+        window.addEventListener('touchend', cancelHold);
+        window.addEventListener('touchcancel', cancelHold);
+
+        /* =========================================================================
+           TRANSITION: CHUYỂN TỪ BÓ HOA SANG KHÔNG GIAN BÓ HOA 3D HOÀNH TRÁNG
+           ========================================================================= */
+        const phaseGalaxy = document.getElementById('phase-galaxy');
+        let bouquetEmergenceStart = 0;
+        let isBouquetEmerging = false;
+
+        function startBouquetEmergenceAnimation() {
+            bouquetEmergenceStart = performance.now();
+            isBouquetEmerging = true;
+            if (centerBouquetGroup) {
+                centerBouquetGroup.scale.set(0.12, 0.12, 0.12);
+            }
+            if (flareSprite) {
+                flareSprite.scale.set(10, 10, 1);
+                flareSprite.material.opacity = 1.0;
+            }
+        }
+
+        function triggerGalaxyTransition() {
+            if (navigator.vibrate) {
+                try { navigator.vibrate([40, 60, 80]); } catch(e){}
+            }
+
+            burstOverlay.classList.add('active');
+            phaseBouquet.classList.add('fade-out');
+
+            setTimeout(() => {
+                phaseBouquet.style.display = 'none';
+                phaseGalaxy.classList.add('active');
+                document.body.classList.add('in-galaxy');
+                burstOverlay.classList.remove('active');
+
+                // Trigger 3D bouquet emergence animation & camera glide
+                startBouquetEmergenceAnimation();
+                resetGalaxyCamera();
+            }, 600);
+        }
+
+        const btnBack = document.getElementById('btn-back');
+        btnBack.addEventListener('click', () => {
+            phaseGalaxy.classList.remove('active');
+            burstOverlay.classList.add('active');
+
+            setTimeout(() => {
+                phaseBouquet.style.display = 'flex';
+                void phaseBouquet.offsetWidth;
+                phaseBouquet.classList.remove('fade-out');
+                document.body.classList.remove('in-galaxy');
+                burstOverlay.classList.remove('active');
+
+                // Reset emergence state
+                if (centerBouquetGroup) {
+                    centerBouquetGroup.scale.set(0.12, 0.12, 0.12);
+                }
+                if (flareSprite) {
+                    flareSprite.material.opacity = 0;
+                }
+                isBouquetEmerging = false;
+            }, 450);
+        });
+
+        /* =========================================================================
+           5. GIAI ĐOẠN 2: BÓ HOA HỒNG 3D HOÀNH TRÁNG & NGÂN HÀ ĐIỀU ƯỚC CỦA ÁNH TUYẾT
+           ========================================================================= */
+        const webglCanvas = document.getElementById('webgl-canvas');
+        let scene, camera, renderer, controls;
+        let centerBouquetGroup;
+        let bouquetMesh, auraMesh, groundRing, flareSprite;
+        let topLight, roseLight, goldLight, rimLight;
+        let crystalCardMeshes = [];
+        let textSprites = [];
+        let fallingPetals3D = [];
+        let firefliesList = [];
+        let starParticles;
+        let isGalaxyInit = false;
+
+        function initThreeGalaxy() {
+            if (isGalaxyInit) return;
+            isGalaxyInit = true;
+
+            scene = new THREE.Scene();
+
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2500);
+            camera.position.set(0, 42, 235);
+
+            renderer = new THREE.WebGLRenderer({
+                canvas: webglCanvas,
+                alpha: true,
+                antialias: true
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.rotateSpeed = 0.65;
+            controls.zoomSpeed = 0.85;
+            controls.minDistance = 60;
+            controls.maxDistance = 550;
+            controls.autoRotate = true;
+            controls.autoRotateSpeed = 0.28;
+
+            // Ambient & Scenic Lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
+            scene.add(ambientLight);
+
+            topLight = new THREE.DirectionalLight(0xffe4ec, 1.4);
+            topLight.position.set(0, 180, 100);
+            scene.add(topLight);
+
+            roseLight = new THREE.PointLight(0xff2a85, 3.2, 450);
+            roseLight.position.set(0, 10, 25);
+            scene.add(roseLight);
+
+            goldLight = new THREE.PointLight(0xffd166, 2.6, 280);
+            goldLight.position.set(0, -25, 30);
+            scene.add(goldLight);
+
+            rimLight = new THREE.PointLight(0xff69b4, 1.8, 350);
+            rimLight.position.set(0, -60, -60);
+            scene.add(rimLight);
+
+            // Create 3D Scene Elements
+            createStardustParticles();
+            createGrandBouquetCenterpiece();
+            createFallingRosePetals();
+            createFireflies();
+            createCrystalGlassCards();
+            createGlowingTextSprites();
+
+            // Raycaster for clicking cards
+            setupCardRaycaster();
+
+            // Animation Loop
+            animateGalaxy();
+        }
+
+        function resetGalaxyCamera() {
+            if (!isGalaxyInit) {
+                initThreeGalaxy();
+            }
+            camera.position.set(0, 80, 320);
+            controls.target.set(0, 0, 0);
+
+            let startTime = performance.now();
+            function glideCam(now) {
+                let p = Math.min((now - startTime) / 1800, 1);
+                let ease = 1 - Math.pow(1 - p, 3);
+                camera.position.z = 320 - (85 * ease);
+                camera.position.y = 80 - (38 * ease);
+                if (p < 1) requestAnimationFrame(glideCam);
+            }
+            requestAnimationFrame(glideCam);
+        }
+
+        // ==============================================
+        // 1. TRUNG TÂM KHÔNG GIAN: BÓ HOA HỒNG 3D HOÀNH TRÁNG
+        // ==============================================
+        function createGrandBouquetCenterpiece() {
+            centerBouquetGroup = new THREE.Group();
+            centerBouquetGroup.position.set(0, 0, 0);
+
+            // Load Luxury Bouquet Texture with delicate wrapping paper & ribbon
+            const texLoader = new THREE.TextureLoader();
+            const bouquetTex = texLoader.load('assets/bouquet_glow.png', (tex) => {
+                tex.generateMipmaps = true;
+                tex.minFilter = THREE.LinearMipmapLinearFilter;
+                tex.magFilter = THREE.LinearFilter;
+            });
+
+            // Main Volumetric Centerpiece Plane
+            const bouquetGeom = new THREE.PlaneGeometry(125, 125);
+            const bouquetMat = new THREE.MeshBasicMaterial({
+                map: bouquetTex,
+                transparent: true,
+                side: THREE.DoubleSide,
+                depthWrite: false
+            });
+            bouquetMesh = new THREE.Mesh(bouquetGeom, bouquetMat);
+            centerBouquetGroup.add(bouquetMesh);
+
+            // Radiant Breathing Aura Behind Bouquet
+            const auraCanvas = document.createElement('canvas');
+            auraCanvas.width = 256;
+            auraCanvas.height = 256;
+            const aCtx = auraCanvas.getContext('2d');
+            const aGrad = aCtx.createRadialGradient(128, 128, 0, 128, 128, 128);
+            aGrad.addColorStop(0, 'rgba(255, 42, 133, 0.65)');
+            aGrad.addColorStop(0.35, 'rgba(255, 105, 180, 0.42)');
+            aGrad.addColorStop(0.7, 'rgba(255, 182, 218, 0.16)');
+            aGrad.addColorStop(1, 'rgba(255, 105, 180, 0)');
+            aCtx.fillStyle = aGrad;
+            aCtx.fillRect(0, 0, 256, 256);
+
+            const auraTex = new THREE.CanvasTexture(auraCanvas);
+            const auraGeom = new THREE.PlaneGeometry(152, 152);
+            const auraMat = new THREE.MeshBasicMaterial({
+                map: auraTex,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                side: THREE.DoubleSide
+            });
+            auraMesh = new THREE.Mesh(auraGeom, auraMat);
+            auraMesh.position.z = -1.5;
+            centerBouquetGroup.add(auraMesh);
+
+            // Floating Ground Celestial Halo Ring Beneath Bouquet
+            const ringCanvas = document.createElement('canvas');
+            ringCanvas.width = 256;
+            ringCanvas.height = 256;
+            const rCtx = ringCanvas.getContext('2d');
+            rCtx.strokeStyle = 'rgba(255, 182, 218, 0.75)';
+            rCtx.lineWidth = 4;
+            rCtx.shadowColor = '#ff2a85';
+            rCtx.shadowBlur = 14;
+            rCtx.beginPath();
+            rCtx.arc(128, 128, 108, 0, Math.PI * 2);
+            rCtx.stroke();
+
+            rCtx.strokeStyle = 'rgba(255, 209, 102, 0.55)';
+            rCtx.lineWidth = 2;
+            rCtx.beginPath();
+            rCtx.arc(128, 128, 118, 0, Math.PI * 2);
+            rCtx.stroke();
+
+            const ringTex = new THREE.CanvasTexture(ringCanvas);
+            const ringGeom = new THREE.PlaneGeometry(105, 105);
+            const ringMat = new THREE.MeshBasicMaterial({
+                map: ringTex,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                side: THREE.DoubleSide,
+                depthWrite: false
+            });
+            groundRing = new THREE.Mesh(ringGeom, ringMat);
+            groundRing.rotation.x = Math.PI / 2;
+            groundRing.position.y = -52;
+            centerBouquetGroup.add(groundRing);
+
+            // Optical Flare Sprite for Zoom-In Pulse Entrance
+            const flareCanvas = document.createElement('canvas');
+            flareCanvas.width = 256;
+            flareCanvas.height = 256;
+            const fCtx = flareCanvas.getContext('2d');
+            const fGrad = fCtx.createRadialGradient(128, 128, 0, 128, 128, 128);
+            fGrad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+            fGrad.addColorStop(0.2, 'rgba(255, 240, 180, 0.95)');
+            fGrad.addColorStop(0.5, 'rgba(255, 77, 141, 0.6)');
+            fGrad.addColorStop(1, 'rgba(255, 42, 133, 0)');
+            fCtx.fillStyle = fGrad;
+            fCtx.fillRect(0, 0, 256, 256);
+
+            // Anamorphic 4-point star beam
+            fCtx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+            fCtx.beginPath();
+            fCtx.moveTo(128, 4);
+            fCtx.quadraticCurveTo(128, 128, 252, 128);
+            fCtx.quadraticCurveTo(128, 128, 128, 252);
+            fCtx.quadraticCurveTo(128, 128, 4, 128);
+            fCtx.quadraticCurveTo(128, 128, 128, 4);
+            fCtx.fill();
+
+            const flareTex = new THREE.CanvasTexture(flareCanvas);
+            const flareMat = new THREE.SpriteMaterial({
+                map: flareTex,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+            flareSprite = new THREE.Sprite(flareMat);
+            flareSprite.position.set(0, 0, 12);
+            flareSprite.scale.set(0, 0, 1);
+            centerBouquetGroup.add(flareSprite);
+
+            centerBouquetGroup.scale.set(0.12, 0.12, 0.12);
+            scene.add(centerBouquetGroup);
+        }
+
+        // ==============================================
+        // 2. CÁNH HOA HỒNG 3D RƠI LẢ TẢ NÊN THƠ (FALLING PETALS - 60 CÁNH)
+        // ==============================================
+        function createCurvedRosePetalGeometry(width, length, curl, tipBend) {
+            const geom = new THREE.PlaneGeometry(width, length, 12, 12);
+            geom.translate(0, length / 2, 0);
+            const pos = geom.attributes.position;
+
+            for (let i = 0; i < pos.count; i++) {
+                let x = pos.getX(i);
+                let y = pos.getY(i);
+                let normY = y / length;
+                let normX = x / (width / 2);
+
+                let taper = Math.sin(normY * Math.PI * 0.92 + 0.12);
+                pos.setX(i, x * taper);
+
+                let cupZ = Math.cos(normX * Math.PI * 0.5) * Math.sin(normY * Math.PI) * curl;
+                let tipZ = Math.pow(Math.max(0, normY - 0.52) / 0.48, 2.2) * tipBend;
+                pos.setZ(i, cupZ - tipZ);
+            }
+            geom.computeVertexNormals();
+            return geom;
+        }
+
+        function createFallingRosePetals() {
+            fallingPetals3D = [];
+            const petalColors = [0xff2a85, 0xff69b4, 0xff85a2, 0xffa8cc, 0xff4081];
+
+            for (let i = 0; i < 60; i++) {
+                const geom = createCurvedRosePetalGeometry(7, 10, 2.2, 1.8);
+                const mat = new THREE.MeshStandardMaterial({
+                    color: petalColors[i % petalColors.length],
+                    emissive: 0x3d0019,
+                    roughness: 0.38,
+                    metalness: 0.05,
+                    side: THREE.DoubleSide
+                });
+
+                const mesh = new THREE.Mesh(geom, mat);
+                const theta = Math.random() * Math.PI * 2;
+                const radius = 22 + Math.random() * 105;
+                const y = -115 + Math.random() * 240;
+
+                mesh.position.set(
+                    Math.cos(theta) * radius,
+                    y,
+                    Math.sin(theta) * radius
+                );
+
+                mesh.rotation.set(
+                    Math.random() * Math.PI * 2,
+                    Math.random() * Math.PI * 2,
+                    Math.random() * Math.PI * 2
+                );
+
+                const scale = 0.65 + Math.random() * 0.55;
+                mesh.scale.set(scale, scale, scale);
+
+                mesh.userData = {
+                    baseRadius: radius,
+                    theta: theta,
+                    fallSpeed: 0.30 + Math.random() * 0.38,
+                    rotSpeedX: (Math.random() - 0.5) * 0.022,
+                    rotSpeedY: (Math.random() - 0.5) * 0.022,
+                    rotSpeedZ: (Math.random() - 0.5) * 0.022,
+                    driftSpeed: 0.007 + Math.random() * 0.012,
+                    seed: Math.random() * 10
+                };
+
+                scene.add(mesh);
+                fallingPetals3D.push(mesh);
+            }
+        }
+
+        // ==============================================
+        // 3. ĐOM ĐÓM PHÁT SÁNG & BỤI SAO LUNG LINH (90 FIREFLIES & 1200 STARDUST)
+        // ==============================================
+        function createFireflies() {
+            firefliesList = [];
+
+            const ffCanvas = document.createElement('canvas');
+            ffCanvas.width = 64;
+            ffCanvas.height = 64;
+            const ffCtx = ffCanvas.getContext('2d');
+            const ffGrad = ffCtx.createRadialGradient(32, 32, 0, 32, 32, 32);
+            ffGrad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+            ffGrad.addColorStop(0.25, 'rgba(255, 225, 130, 0.95)');
+            ffGrad.addColorStop(0.6, 'rgba(255, 105, 180, 0.45)');
+            ffGrad.addColorStop(1, 'rgba(255, 105, 180, 0)');
+            ffCtx.fillStyle = ffGrad;
+            ffCtx.fillRect(0, 0, 64, 64);
+
+            const ffTex = new THREE.CanvasTexture(ffCanvas);
+            const ffMat = new THREE.SpriteMaterial({
+                map: ffTex,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+
+            for (let i = 0; i < 90; i++) {
+                const sprite = new THREE.Sprite(ffMat);
+                const theta = Math.random() * Math.PI * 2;
+                const r = 25 + Math.random() * 135;
+                const y = -70 + Math.random() * 150;
+
+                const x = Math.cos(theta) * r;
+                const z = Math.sin(theta) * r;
+
+                sprite.position.set(x, y, z);
+                const baseSize = 4.2 + Math.random() * 4.6;
+                sprite.scale.set(baseSize, baseSize, 1);
+
+                sprite.userData = {
+                    baseX: x,
+                    baseY: y,
+                    baseZ: z,
+                    baseSize: baseSize,
+                    speedX: 0.55 + Math.random() * 0.75,
+                    speedY: 0.45 + Math.random() * 0.65,
+                    speedZ: 0.55 + Math.random() * 0.75,
+                    pulseSpeed: 1.8 + Math.random() * 2.2,
+                    phase: Math.random() * Math.PI * 2
+                };
+
+                scene.add(sprite);
+                firefliesList.push(sprite);
+            }
+        }
+
+        function createStardustParticles() {
+            const count = 1200;
+            const geom = new THREE.BufferGeometry();
+            const pos = new Float32Array(count * 3);
+            const cols = new Float32Array(count * 3);
+
+            const palette = [
+                new THREE.Color(0xff4d8d),
+                new THREE.Color(0xffb3d9),
+                new THREE.Color(0xffd166),
+                new THREE.Color(0xfff0aa),
+                new THREE.Color(0xffffff)
+            ];
+
+            for (let i = 0; i < count; i++) {
+                const r = 135 + Math.random() * 410;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(2 * Math.random() - 1);
+
+                pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+                pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta) * 0.75;
+                pos[i * 3 + 2] = r * Math.cos(phi);
+
+                const c = palette[Math.floor(Math.random() * palette.length)];
+                cols[i * 3] = c.r;
+                cols[i * 3 + 1] = c.g;
+                cols[i * 3 + 2] = c.b;
+            }
+
+            geom.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+            geom.setAttribute('color', new THREE.BufferAttribute(cols, 3));
+
+            const pCanvas = document.createElement('canvas');
+            pCanvas.width = 64;
+            pCanvas.height = 64;
+            const pCtx = pCanvas.getContext('2d');
+            const grad = pCtx.createRadialGradient(32, 32, 0, 32, 32, 32);
+            grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+            grad.addColorStop(0.3, 'rgba(255, 120, 180, 0.85)');
+            grad.addColorStop(1, 'rgba(255, 120, 180, 0)');
+            pCtx.fillStyle = grad;
+            pCtx.fillRect(0, 0, 64, 64);
+
+            const pTexture = new THREE.CanvasTexture(pCanvas);
+            const material = new THREE.PointsMaterial({
+                size: 5.2,
+                map: pTexture,
+                transparent: true,
+                vertexColors: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+
+            starParticles = new THREE.Points(geom, material);
+            scene.add(starParticles);
+        }
+
+        // ==============================================
+        // 4. CÁC TẤM THIỆP KÍNH MỜ (SẮC NÉT, QUỸ ĐẠO THOÁNG ĐÃNG R = 210 - 232)
+        // ==============================================
+        function createCrystalGlassCards() {
+            const cards = CONFIG.crystalCards;
+            const total = cards.length;
+
+            cards.forEach((card, index) => {
+                // Wide, spacious outer constellation orbit (R = 210 - 232)
+                const baseAngle = (index / total) * Math.PI * 2;
+                const radius = 210 + (index % 3) * 11;
+                const x = radius * Math.cos(baseAngle);
+                const z = radius * Math.sin(baseAngle);
+                const y = Math.sin(index * 1.5) * 26;
+
+                // Higher resolution canvas for ultra-crisp display (500x640)
+                const cardCanvas = document.createElement('canvas');
+                cardCanvas.width = 500;
+                cardCanvas.height = 640;
+                const ctx = cardCanvas.getContext('2d');
+
+                drawCrystalCard(ctx, card);
+
+                const cardTexture = new THREE.CanvasTexture(cardCanvas);
+                const geometry = new THREE.PlaneGeometry(30, 38.4);
+                const material = new THREE.MeshBasicMaterial({
+                    map: cardTexture,
+                    side: THREE.DoubleSide,
+                    transparent: true,
+                    opacity: 0.98,
+                    depthWrite: false
+                });
+
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.set(x, y, z);
+                mesh.lookAt(0, y * 0.15, 0);
+
+                mesh.userData = {
+                    initialY: y,
+                    baseAngle: baseAngle,
+                    radius: radius,
+                    seed: Math.random() * 10,
+                    bobSpeed: 1.1 + Math.random() * 0.7,
+                    cardData: card,
+                    index: index
+                };
+
+                scene.add(mesh);
+                crystalCardMeshes.push(mesh);
+            });
+        }
+
+        function drawCrystalCard(ctx, card) {
+            ctx.clearRect(0, 0, 500, 640);
+
+            // Layer 1: Semi-opaque dark-glass tint for perfect contrast & readability
+            ctx.fillStyle = 'rgba(16, 6, 26, 0.65)';
+            ctx.beginPath();
+            ctx.roundRect(14, 14, 472, 612, 28);
+            ctx.fill();
+
+            // Layer 2: Frosted glass gradient
+            const bgGrad = ctx.createLinearGradient(0, 0, 500, 640);
+            bgGrad.addColorStop(0, 'rgba(255, 255, 255, 0.36)');
+            bgGrad.addColorStop(0.35, 'rgba(255, 190, 230, 0.24)');
+            bgGrad.addColorStop(0.75, 'rgba(255, 90, 160, 0.34)');
+            bgGrad.addColorStop(1, 'rgba(255, 140, 200, 0.44)');
+            ctx.fillStyle = bgGrad;
+            ctx.beginPath();
+            ctx.roundRect(14, 14, 472, 612, 28);
+            ctx.fill();
+
+            // Layer 3: Glowing Outer Neon Pink Stroke
+            ctx.strokeStyle = '#ff3385';
+            ctx.lineWidth = 3.5;
+            ctx.shadowColor = '#ff2a85';
+            ctx.shadowBlur = 22;
+            ctx.stroke();
+
+            // Layer 4: Inner Hairline Crisp Stroke
+            ctx.shadowBlur = 0;
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.92)';
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            ctx.roundRect(18, 18, 464, 604, 24);
+            ctx.stroke();
+
+            // Card Icon Circle
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.32)';
+            ctx.beginPath();
+            ctx.arc(250, 130, 56, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#ffe4ec';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Emoji / Icon
+            ctx.font = '64px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(card.icon, 250, 134);
+
+            // Title
+            ctx.font = 'bold 36px Mali, cursive, sans-serif';
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowColor = '#ff2a85';
+            ctx.shadowBlur = 14;
+            ctx.fillText(card.title, 250, 235);
+
+            // Subtitle
+            ctx.shadowBlur = 4;
+            ctx.font = '700 24px Mali, cursive, sans-serif';
+            ctx.fillStyle = '#ffd166';
+            ctx.fillText(card.subtitle, 250, 278);
+
+            // Divider line with sparkling stars
+            const divGrad = ctx.createLinearGradient(90, 315, 410, 315);
+            divGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+            divGrad.addColorStop(0.5, 'rgba(255, 200, 235, 0.95)');
+            divGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            ctx.strokeStyle = divGrad;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(90, 315);
+            ctx.lineTo(410, 315);
+            ctx.stroke();
+
+            // Message text (Crisp, high-contrast, easily readable)
+            ctx.font = '600 24px Mali, cursive, sans-serif';
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
+            ctx.shadowBlur = 10;
+            wrapText(ctx, card.message, 250, 370, 410, 38);
+
+            // Bottom decorative tag
+            ctx.font = '700 20px Mali, cursive, sans-serif';
+            ctx.fillStyle = '#ff99cc';
+            ctx.shadowBlur = 0;
+            ctx.fillText('20/10 • Yêu Thương & Dịu Dàng 🌸', 250, 580);
+        }
+
+        function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+            const words = text.split(' ');
+            let line = '';
+            let currentY = y;
+
+            for (let n = 0; n < words.length; n++) {
+                const testLine = line + words[n] + ' ';
+                const metrics = ctx.measureText(testLine);
+                const testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                    ctx.fillText(line.trim(), x, currentY);
+                    line = words[n] + ' ';
+                    currentY += lineHeight;
+                } else {
+                    line = testLine;
+                }
+            }
+            ctx.fillText(line.trim(), x, currentY);
+        }
+
+        // ==============================================
+        // 5. CÂU CHÚC 3D PHÁT SÁNG (NEON TEXT - QUỸ ĐẠO R = 155 - 171)
+        // ==============================================
+        function createGlowingTextSprites() {
+            const greetings = CONFIG.greetings;
+            const total = greetings.length;
+            const heights = [44, -38, 40, -42, 45, -36];
+
+            greetings.forEach((text, index) => {
+                // Intermediate orbit (R = 155 - 171) - well clear of central bouquet!
+                const baseAngle = (index / total) * Math.PI * 2 + 0.15;
+                const radius = 156 + (index % 2) * 15;
+                const x = Math.cos(baseAngle) * radius;
+                const z = Math.sin(baseAngle) * radius;
+                const y = heights[index % heights.length];
+
+                const tCanvas = document.createElement('canvas');
+                tCanvas.width = 880;
+                tCanvas.height = 180;
+                const ctx = tCanvas.getContext('2d');
+
+                ctx.font = 'bold 40px Mali, cursive, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                // Outer neon glow
+                ctx.shadowColor = '#ff2a85';
+                ctx.shadowBlur = 32;
+                ctx.fillStyle = '#ff4d94';
+                ctx.fillText(text, 440, 90);
+
+                // Inner bright white core
+                ctx.shadowBlur = 14;
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(text, 440, 90);
+
+                const texture = new THREE.CanvasTexture(tCanvas);
+                const spriteMaterial = new THREE.SpriteMaterial({
+                    map: texture,
+                    transparent: true,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false
+                });
+
+                const sprite = new THREE.Sprite(spriteMaterial);
+                sprite.position.set(x, y, z);
+                sprite.scale.set(64, 14, 1);
+
+                sprite.userData = {
+                    initialY: y,
+                    baseAngle: baseAngle,
+                    radius: radius,
+                    seed: index * 1.3
+                };
+
+                scene.add(sprite);
+                textSprites.push(sprite);
+            });
+        }
+
+        // Setup raycaster for clicking cards
+        function setupCardRaycaster() {
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2();
+            let pointerDownPos = { x: 0, y: 0 };
+
+            webglCanvas.addEventListener('pointerdown', (e) => {
+                pointerDownPos.x = e.clientX;
+                pointerDownPos.y = e.clientY;
+            });
+
+            webglCanvas.addEventListener('pointerup', (e) => {
+                const dist = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
+                if (dist > 6) return;
+
+                mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+                raycaster.setFromCamera(mouse, camera);
+                const intersects = raycaster.intersectObjects(crystalCardMeshes);
+
+                if (intersects.length > 0) {
+                    const clickedMesh = intersects[0].object;
+                    openCrystalLightbox(clickedMesh.userData.cardData);
+                }
+            });
+        }
+
+        // Lightbox popup for Crystal Card
+        const crystalLightbox = document.getElementById('crystal-lightbox');
+        const cpIcon = document.getElementById('cp-icon');
+        const cpTitle = document.getElementById('cp-title');
+        const cpSubtitle = document.getElementById('cp-subtitle');
+        const cpMessage = document.getElementById('cp-message');
+        const btnCloseCrystal = document.getElementById('btn-close-crystal');
+
+        function openCrystalLightbox(data) {
+            cpIcon.textContent = data.icon;
+            cpTitle.textContent = data.title;
+            cpSubtitle.textContent = data.subtitle;
+            cpMessage.textContent = data.message;
+            crystalLightbox.classList.add('open');
+        }
+
+        btnCloseCrystal.addEventListener('click', () => {
+            crystalLightbox.classList.remove('open');
+        });
+        crystalLightbox.addEventListener('click', (e) => {
+            if (e.target === crystalLightbox) {
+                crystalLightbox.classList.remove('open');
+            }
+        });
+
+        // 3D Animation Loop
+        function animateGalaxy(timestamp) {
+            requestAnimationFrame(animateGalaxy);
+            const time = timestamp * 0.001 || 0;
+            const now = performance.now();
+
+            if (controls) controls.update();
+
+            // 1. Animate Grand Bouquet Centerpiece with Zoom-In Pulse & Flare
+            if (centerBouquetGroup) {
+                // Floating gentle bobbing
+                centerBouquetGroup.position.y = Math.sin(time * 1.6) * 5.5;
+                centerBouquetGroup.rotation.z = Math.sin(time * 1.1) * 0.025;
+
+                // Zoom-In Pulse & Optical Flare Emergence Animation
+                if (isBouquetEmerging) {
+                    const elapsed = now - bouquetEmergenceStart;
+                    const duration = 2200;
+                    const p = Math.min(elapsed / duration, 1.0);
+
+                    // Zoom-In Pulse: expands to 1.18x peak at 55% then settles softly to 1.0
+                    let curScale;
+                    if (p < 0.55) {
+                        let subP = p / 0.55;
+                        let easeOut = 1 - Math.pow(1 - subP, 3);
+                        curScale = 0.12 + (1.18 - 0.12) * easeOut;
+                    } else {
+                        let subP = (p - 0.55) / 0.45;
+                        let easeSettle = Math.sin(subP * Math.PI * 0.5);
+                        curScale = 1.18 - 0.18 * easeSettle;
+                    }
+                    centerBouquetGroup.scale.set(curScale, curScale, curScale);
+
+                    // Optical Flare Light Flash
+                    if (flareSprite) {
+                        if (p < 0.35) {
+                            let fP = p / 0.35;
+                            let fScale = 220 * Math.sin(fP * Math.PI * 0.5);
+                            flareSprite.scale.set(fScale, fScale, 1);
+                            flareSprite.material.opacity = 1.0;
+                        } else {
+                            let fFade = (p - 0.35) / 0.65;
+                            let fScale = 220 + 60 * fFade;
+                            flareSprite.scale.set(fScale, fScale, 1);
+                            flareSprite.material.opacity = Math.max(0, 1.0 - Math.pow(fFade, 1.5));
+                        }
+                    }
+
+                    // Dynamic light flare
+                    if (roseLight) {
+                        roseLight.intensity = 3.2 + (2.4 * Math.sin(p * Math.PI));
+                    }
+                    if (goldLight) {
+                        goldLight.intensity = 2.6 + (2.0 * Math.sin(p * Math.PI));
+                    }
+
+                    if (p >= 1.0) {
+                        isBouquetEmerging = false;
+                        if (flareSprite) flareSprite.material.opacity = 0;
+                    }
+                }
+
+                // Billboard orientation: bouquet & aura always face viewer gracefully
+                if (bouquetMesh && camera) {
+                    bouquetMesh.quaternion.copy(camera.quaternion);
+                }
+                if (auraMesh && camera) {
+                    auraMesh.quaternion.copy(camera.quaternion);
+                    // Breathing pulse of the aura
+                    const auraPulse = 1.0 + Math.sin(time * 2.2) * 0.1;
+                    auraMesh.scale.set(auraPulse, auraPulse, 1);
+                }
+
+                // Rotating celestial ground halo ring
+                if (groundRing) {
+                    groundRing.rotation.z = time * 0.18;
+                }
+            }
+
+            // 2. Animate Falling 3D Rose Petals (60 petals fluttering gracefully)
+            for (let petal of fallingPetals3D) {
+                const u = petal.userData;
+                u.theta += u.driftSpeed;
+                const currentR = u.baseRadius + Math.sin(time * 1.5 + u.seed) * 14;
+                petal.position.x = Math.cos(u.theta) * currentR;
+                petal.position.z = Math.sin(u.theta) * currentR;
+                petal.position.y -= (u.fallSpeed + Math.sin(time * 2.2 + u.seed) * 0.08);
+
+                petal.rotation.x += u.rotSpeedX + Math.sin(time * 1.5 + u.seed) * 0.008;
+                petal.rotation.y += u.rotSpeedY;
+                petal.rotation.z += u.rotSpeedZ + Math.cos(time * 1.8 + u.seed) * 0.008;
+
+                // Loop reset from bottom to top
+                if (petal.position.y < -125) {
+                    petal.position.y = 125;
+                    u.baseRadius = 22 + Math.random() * 105;
+                }
+            }
+
+            // 3. Animate Fireflies (90 fireflies in organic 3D swirl & twinkle)
+            for (let ff of firefliesList) {
+                const u = ff.userData;
+                ff.position.x = u.baseX + Math.sin(time * u.speedX + u.phase) * 22 + Math.cos(time * 0.45 + u.phase) * 8;
+                ff.position.y = u.baseY + Math.cos(time * u.speedY + u.phase) * 18 + Math.sin(time * 0.75 + u.phase) * 6;
+                ff.position.z = u.baseZ + Math.sin(time * u.speedZ + u.phase) * 22 + Math.sin(time * 0.35 + u.phase) * 8;
+
+                const sinPulse = Math.sin(time * u.pulseSpeed + u.phase);
+                const quickTwinkle = 0.8 + 0.2 * Math.sin(time * 7 + u.phase);
+                const pulse = u.baseSize * (0.45 + 0.55 * sinPulse * sinPulse * quickTwinkle);
+                ff.scale.set(pulse, pulse, 1);
+            }
+
+            // 4. Animate Crystal Cards Orbiting at Wide Radius
+            for (let mesh of crystalCardMeshes) {
+                const u = mesh.userData;
+                const cardAngle = u.baseAngle + time * 0.032;
+                mesh.position.x = Math.cos(cardAngle) * u.radius;
+                mesh.position.z = Math.sin(cardAngle) * u.radius;
+                mesh.position.y = u.initialY + Math.sin(time * u.bobSpeed + u.seed) * 4.8;
+                mesh.lookAt(0, mesh.position.y * 0.15, 0);
+            }
+
+            // 5. Animate Neon Wishes Orbiting around Bouquet
+            for (let sprite of textSprites) {
+                const u = sprite.userData;
+                const wishAngle = u.baseAngle + time * 0.045;
+                sprite.position.x = Math.cos(wishAngle) * u.radius;
+                sprite.position.z = Math.sin(wishAngle) * u.radius;
+                sprite.position.y = u.initialY + Math.sin(time * 1.5 + u.seed) * 4.2;
+            }
+
+            // 6. Rotating Stardust Galaxy
+            if (starParticles) {
+                starParticles.rotation.y = time * 0.022;
+                starParticles.rotation.x = Math.sin(time * 0.015) * 0.035;
+            }
+
+            if (renderer && scene && camera) {
+                renderer.render(scene, camera);
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            if (camera && renderer) {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        });
+
+        /* =========================================================================
+           6. GIAO DIỆN ĐIỀU KHIỂN & BỨC THƯ TÌNH CẢM
+           ========================================================================= */
+        const btnLetter = document.getElementById('btn-letter');
+        const letterModal = document.getElementById('letter-modal');
+        const btnCloseLetter = document.getElementById('btn-close-letter');
+        const letterTitleEl = document.getElementById('letter-title-el');
+        const letterContentEl = document.getElementById('letter-content-el');
+        const letterSigEl = document.getElementById('letter-sig-el');
+
+        let typewriterTimeout = null;
+
+        letterTitleEl.textContent = CONFIG.letter.title;
+        letterSigEl.textContent = CONFIG.letter.signature;
+
+        function openLetter() {
+            letterModal.classList.add('open');
+            startTypewriter();
+        }
+
+        function closeLetter() {
+            letterModal.classList.remove('open');
+            if (typewriterTimeout) {
+                clearTimeout(typewriterTimeout);
+            }
+        }
+
+        function startTypewriter() {
+            const text = CONFIG.letter.content;
+            letterContentEl.innerHTML = '<span class="typewriter-cursor"></span>';
+            letterSigEl.classList.remove('visible');
+
+            let index = 0;
+            if (typewriterTimeout) clearTimeout(typewriterTimeout);
+
+            function typeChar() {
+                if (index < text.length) {
+                    const currentText = text.substring(0, index + 1);
+                    letterContentEl.innerHTML = currentText + '<span class="typewriter-cursor"></span>';
+                    index++;
+                    typewriterTimeout = setTimeout(typeChar, 36 + Math.random() * 20);
+                } else {
+                    letterContentEl.innerHTML = text;
+                    setTimeout(() => {
+                        letterSigEl.classList.add('visible');
+                    }, 250);
+                }
+            }
+
+            typewriterTimeout = setTimeout(typeChar, 300);
+        }
+
+        btnLetter.addEventListener('click', openLetter);
+        btnCloseLetter.addEventListener('click', closeLetter);
+        letterModal.addEventListener('click', (e) => {
+            if (e.target === letterModal) closeLetter();
+        });
+
+    </script>
+</body>
+</html>
